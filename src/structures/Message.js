@@ -7,6 +7,7 @@ const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
+const Sticker = require('./Sticker');
 const { Error, TypeError } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
@@ -132,7 +133,18 @@ class Message extends Base {
         this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
       }
     }
-
+    
+    /**
+     * A collection of stickers in the message
+     * @type {Collection<Snowflake, Sticker>}
+     */
+    this.stickers = new Collection();
+    if (data.stickers) {
+      for (const sticker of data.stickers) {
+        this.stickers.set(sticker.id, new Sticker(this.client, sticker));
+      }
+    }
+    
     /**
      * The timestamp the message was sent at
      * @type {number}
